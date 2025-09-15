@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../model/User";
 import bcrypt from "bcryptjs";
 import { generateToken, throwError } from "../lib/utils";
+import { sendWelcomeEmail } from "../email/email.hanlder";
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { fullname, email, password, confirmPassword, profilePic } = req.body;
@@ -33,6 +34,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     if (newUser) {
       await newUser.save();
       generateToken(newUser._id, res);
+
+      await sendWelcomeEmail(email, fullname, process.env.CLIENT_URL!);
       res.status(201).json({
         message: "New user has been created",
         status: true,
