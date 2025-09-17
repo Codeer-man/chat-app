@@ -7,14 +7,14 @@ export const generateToken = (userId: Types.ObjectId, res: Response) => {
     expiresIn: "7d",
   });
 
-  res.cookie("jwt", token, {
+  const cookie = res.cookie("jwt", token, {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
     secure: process.env.NODE_ENV === "development" ? false : true,
     sameSite: "strict",
   });
 
-  return token;
+  return { token, cookie };
 };
 
 export const throwError = (message: string, statusCode = 500) => {

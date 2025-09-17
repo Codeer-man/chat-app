@@ -14,3 +14,8 @@ export const signupValidation = z
     message: "Password donot match",
     path: ["confirmPassword"],
   });
+
+export const loginValidation = z.object({
+  email: z.email("invalid email format"),
+  password: z.string().min(8, "Must be 8 character long"),
+});
