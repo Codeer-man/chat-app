@@ -14,7 +14,11 @@ export const SendOTPCode = async (
     const otp = Math.floor(10000000 + Math.random() * 90000000);
     await User.updateOne({ otp: otp });
 
+<<<<<<< HEAD
     // await emailVerification(email, otp);
+=======
+    await emailVerification(email, otp);
+>>>>>>> auth
 
     res.status(201).json({
       success: true,
