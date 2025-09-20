@@ -6,21 +6,18 @@ import { sendWelcomeEmail } from "../email/email.hanlder";
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { fullname, email, password, confirmPassword, profilePic } = req.body;
+
   try {
     if (!fullname || !email || !password || !confirmPassword) {
-      res
-        .status(400)
-        .json({ status: false, message: "Please fill all the fields" });
-      throw throwError("please fill all the filed", 400);
+      throwError("PLease fill all the fileds", 400);
     }
 
     const findUser = await User.findOne({ email });
-
     if (findUser) {
-      res.status(400).json({ message: "email already exists", status: false });
+      throwError("EMail already exists", 400);
     }
 
-    //hash password
+    // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -31,22 +28,19 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       profilePic,
     });
 
-    if (newUser) {
-      await newUser.save();
-      const token = generateToken(newUser._id, res);
+    await newUser.save();
 
-      await sendWelcomeEmail(email, fullname, process.env.CLIENT_URL!);
-      res.status(201).json({
-        message: "New user has been created",
-        status: true,
-        token,
-      });
-    } else {
-      res.status(401).json({ message: "Something went wrong", status: false });
-    }
+    const token = generateToken(newUser._id, res);
+    await sendWelcomeEmail(email, fullname, process.env.CLIENT_URL!);
+
+    res.status(201).json({
+      message: "New user has been created",
+      status: true,
+      token,
+    });
   } catch (error) {
     console.error(error);
-    throw throwError("Invalid server error");
+    res.status(500).json({ message: "Invalid server error", status: false });
   }
 };
 
@@ -88,12 +82,7 @@ export const signIn = async (req: Request, res: Response): Promise<void> => {
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
-    const token =
-      req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
-    console.log(token);
-    if (!token) {
-      throwError("Cookie not found", 404);
-    }
+    const token = (req as any).token;
 
     res.clearCookie(token, {
       httpOnly: false,

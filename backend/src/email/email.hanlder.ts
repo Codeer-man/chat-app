@@ -23,3 +23,20 @@ export const sendWelcomeEmail = async (
 
   console.log("Welcome email has been send", data);
 };
+
+export const emailVerification = async (email: string, otp: number) => {
+  const { error, data } = await resendClinet.emails.send({
+    from: "Manish <onboarding@resend.dev>",
+    to: email,
+    subject: "Welcome to chat app",
+    html: `<p>Your verification code is: <b>${otp}</b>. It expires in 10 minutes.</p>`,
+  });
+
+  if (error) {
+    console.error("Resend error:", error);
+    throwError("Failed to send email verification message");
+    return;
+  }
+
+  console.log("email verification send", data);
+};

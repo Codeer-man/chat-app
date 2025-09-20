@@ -5,6 +5,9 @@ interface UserI {
   email: string;
   password: string;
   profilePic: string;
+  verified: Boolean;
+  otp: Number;
+  otpExpiresAt: Date;
 }
 
 const userScehma = new mongoose.Schema<UserI>(
@@ -26,6 +29,18 @@ const userScehma = new mongoose.Schema<UserI>(
     profilePic: {
       type: String,
       default: "",
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: Number,
+      default: null,
+    },
+    otpExpiresAt: {
+      type: Date,
+      default: () => Date.now() + 10 * 60 * 1000, // 10 min expiry
     },
   },
   {
