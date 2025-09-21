@@ -2,6 +2,7 @@ import express, { Response } from "express";
 import dotenv from "dotenv";
 import authRoute from "./routes/auth.routes";
 import path from "path";
+import cookieParser from "cookie-parser"
 import { ConnectDB } from "./lib/db";
 
 dotenv.config();
@@ -9,6 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json()); // to get data from req.body
+app.use(cookieParser())
 
 app.use("/api/auth", authRoute);
 
