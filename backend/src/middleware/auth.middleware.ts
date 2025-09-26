@@ -1,9 +1,13 @@
-import { RequestHandler } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { throwError } from "../lib/utils";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../model/User";
 
-export const authMiddleware: RequestHandler = async (req, res, next) => {
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const token =
       req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");

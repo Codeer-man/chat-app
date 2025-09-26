@@ -7,8 +7,11 @@ import {
   SendOTPCode,
   verifyOTP,
 } from "../controllers/emailVerification.controller";
+import { arcjetProtection } from "../middleware/aj.middleware";
 
-const router = express();
+const router = express.Router();
+
+router.use(arcjetProtection);
 
 router.post("/signup", validation(signupValidation), signup);
 router.post("/login", validation(loginValidation), signIn);
